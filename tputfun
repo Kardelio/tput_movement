@@ -1,0 +1,54 @@
+#!/bin/bash
+
+user_interrupt(){
+	echo "User done!"
+	tput cvvis
+	tput cnorm
+	tput clear
+	reset
+	exit 0
+}
+
+trap user_interrupt SIGINT
+trap user_interrupt SIGTSTP
+
+tput civis
+h=$(tput lines)
+w=$(tput cols)
+cw=$((w/2))
+ch=$((h/2))
+amountY=0
+amountX=0
+
+function move(){
+	tput clear
+	up=$((ch+amountY))
+	across=$((cw+amountX))
+	tput cup $up $across
+	echo "x"
+}
+
+while true; do
+	move
+	tput rev
+	tput cup 0 0
+	echo "Use vim keys to move around... (h - left, j - down, k - up, l - right)"
+	tput sgr0
+	read -r -sn1 choice
+	case "$choice"
+	in
+	h)
+	amountX=$((amountX-1))	
+		;;
+	j)
+	amountY=$((amountY+1))	
+		;;
+	k)
+	amountY=$((amountY-1))	
+		;;
+	l)
+	amountX=$((amountX+1))	
+		;;
+	esac
+done
+
